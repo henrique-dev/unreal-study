@@ -89,9 +89,18 @@ Podemos exibir mensagens no OutputLog do Unreal através de da função `UE_LOG(
 - Verbosity: Tipo de log. Pode ser: `Warning` e `Error`;
 - Text: Texto a ser exibido. Precisa usar o macro `TEXT("")`;
 
-Para imprimir strings temos que passar o ponteiro da mesma: `UE_LOG(LogTemp, Warning, *someString)`;
-Para imprimir inteiros temos que passar o TEXT com formato de inteiro: `UE_LOG(LogTemp, Warning, TEXT("Some Integer: %d"), 2)`;
-Para imprimir pontos flutuantes temos que passar o TEXT com formato de ponto flutuante: `UE_LOG(LogTemp, Warning, TEXT("Some float: %f"), 2.5f)`;
+```c++
+UE_LOG(LogTemp, Warning, TEXT("Some Text")); // Para imprimir inteiros temos que passar o TEXT com formato de inteiro
+UE_LOG(LogTemp, Warning, TEXT("Some String: %s", *someFString)); // Para imprimir FString temos que passar operador de sobrecarga * para retornar um array de TCHAR
+UE_LOG(LogTemp, Warning, TEXT("Some Integer: %d"), 2); // Para imprimir inteiros temos que passar o TEXT com formato de inteiro
+UE_LOG(LogTemp, Warning, TEXT("Some float: %f"), 2.5f); // Para imprimir pontos flutuantes temos que passar o TEXT com formato de ponto flutuante
+UE_LOG(LogTemp, Warning, TEXT("Some double: %lf"), 2.5); // Para imprimir double temos que passar o TEXT com formato de double
+UE_LOG(LogTemp, Warning, TEXT("Some char: %c"), 'c'); // Para imprimir char temos que passar o TEXT com formato de char
+UE_LOG(LogTemp, Warning, TEXT("Some wide char: %lc"), L'J'); //Para imprimir wide char temos que passar o TEXT com formato de wide char
+UE_LOG(LogTemp, Warning, TEXT("Some bool: %d"), true); //Para imprimir bool temos que passar o TEXT com formato de integer
+```
+
+
 
 ...
 
