@@ -259,10 +259,14 @@ Em seguida vamos localizar algumas animações em `ParagonLtBelica/Characters/He
 
 Agora vamos trocar as animações dos nossos estados "JogStart" e "JogStop" por nossas animações "_trimmed".
 
-> BP_ShooterAnimInstance > AnimGraph > Ground Locomotion > JogStart (state)
-<div align='center'><img height="150" src="../images/2022-10-12-21-05-48.png"></div>
+<pre>
+  <div align='center'>BP_ShooterAnimInstance > AnimGraph > Ground Locomotion > JogStart (state)</div>
+  <div align='center'><img height="150" src="../images/2022-10-12-21-05-48.png"></div>
+</pre>
 
 
 
-<pre><div align='center'>BP_ShooterAnimInstance > AnimGraph > Ground Locomotion > JogSttop (state)</div>
-<div align='center'><img height="150" src="../images/2022-10-12-21-06-02.png"></div></pre>
+<pre>
+  <div align='center'>BP_ShooterAnimInstance > AnimGraph > Ground Locomotion > JogSttop (state)</div>
+  <div align='center'><img height="150" src="../images/2022-10-12-21-06-02.png"></div>
+</pre>
