@@ -264,5 +264,5 @@ Agora vamos trocar as animações dos nossos estados "JogStart" e "JogStop" por 
 
 
 
-<blockquote><div align='center'>BP_ShooterAnimInstance > AnimGraph > Ground Locomotion > JogSttop (state)</div>
-<div align='center'><img height="150" src="../images/2022-10-12-21-06-02.png"></div></blockquote>
+<pre><div align='center'>BP_ShooterAnimInstance > AnimGraph > Ground Locomotion > JogSttop (state)</div>
+<div align='center'><img height="150" src="../images/2022-10-12-21-06-02.png"></div></pre>
