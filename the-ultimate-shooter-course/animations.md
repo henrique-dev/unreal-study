@@ -240,3 +240,62 @@ Agora vamos trocar as animações dos nossos estados "JogStart" e "JogStop" por 
 <pre><div align='center'><p>BP_ShooterAnimInstance > AnimGraph > Ground Locomotion > JogStart (state)</p><img height="150" src="../images/2022-10-12-21-05-48.png"></div></pre>
 
 <pre><div align='center'><p>BP_ShooterAnimInstance > AnimGraph > Ground Locomotion > JogSttop (state)</p><img height="150" src="../images/2022-10-12-21-06-02.png"></div></pre>
+
+Em seguida vamos começar a editar as animações. Começaremos pela "Jog_Fwd_Start_trimmed" clicando nela duas vezes para abrir o editor.
+
+<pre><div align='center'><p>Jog_Fwd_Start_trimmed</p><img height="350" src="../images/2022-10-12-22-34-40.png"></div></pre>
+
+Podemos começar movendo o cursor para a posição do frame no tempo em que queremos fazer o corte. Então posicionando no frame 45, e com o botão direito escolhendo "Remove from frame 47 to frame 104".
+
+<pre><div align='center'><p>Jog_Fwd_Start_trimmed</p><img height="250" src="../images/2022-10-12-22-44-59.png"></div></pre>
+
+Depois posicionando no frame 15, com o botão direito escolhemos "Remove frame 0 to frame 15".
+
+<pre><div align='center'><p>Jog_Fwd_Start_trimmed</p><img height="250" src="../images/2022-10-12-22-45-52.png"></div></pre>
+
+Agora vamos na animação "Jog_Fwd_Stop_trimmed" clicando nela duas vezes para abrir o editor. Posicionando no frame 28, e com o botão direito escolhendo "Remove from frame 0 to frame 28". Depois posicionando no frame 50, com o botão direito escolhemos "Remove frame 51 to frame 87".
+
+## Rotacionando o personagem de acordo com o movimento
+
+Vamos mudar algumas coisas temporiamente fazendo com que a rotação do personagem não acompanhe a rotação da camera.
+
+```c++
+// ShooterCharacter.cpp
+
+AShooterCharacter::AShooterCharacter() {
+  ...
+
+  // don't rotate when the camera rotates. Let the controller only affect the camera
+  bUseControllerRotationPitch = false;
+  bUseControllerRotationYaw = false;
+  bUseControllerRotationRoll = false;
+
+  // Configure character movement
+  GetCharacterMovement()->bOrientRotationToMovement = true; // Character move in the direction of input...
+  GetCharacterMovement()->RotationRate = FRotator(0.f, 540.f, 0.f); // ... at this rotation rate
+}
+```
+
+Para garantir que essas mudanças funcionem, é necessário que no blueprint de nosso personagem, no componente raiz, na seção Pawn, a opção "Use Controller Rotation Yaw" esteja desmarcada.
+
+<pre><div align='center'><p>BP_ShooterCharacter</p><img height="150" src="../images/2022-10-12-23-10-11.png"></div></pre>
+
+E no componente `CharacterMovement` na seção "Character Movement (Rotation Settings)", a opção Orient Rotation to Movement esteja marcada.
+
+<pre><div align='center'><p>BP_ShooterCharacter</p><img height="100" src="../images/2022-10-12-23-11-38.png"></div></pre>
+
+## Controlando o pulo
+
+Podemos adicionar algumas configurações ao nosso component de movimento para controlar o pulo como velocidade de salto e controle no ar.
+
+```c++
+// ShooterCharacter.cpp
+
+AShooterCharacter::AShooterCharacter() {
+  ...
+
+  // Configure character movement
+  GetCharacterMovement()->JumpZVelocity = 600.f;
+  GetCharacterMovement()->AirControl = 0.2f;
+}
+```
