@@ -4,8 +4,8 @@
 
 Depois de adicionar o modelo ao nosso blueprint, ele se mantem estatico. Isso porque ainda não temos uma animação definida. Para fazer isso primeiro temos que criar uma classe C++. Vamos em adicionar uma nova classe C++, e depois vamos na aba "All Classes", procuramos por "AnimInstance", e então selecionamos ela como classe base. Vamos nomear a classe de `ShooterAnimInstance`. E depois vamos definir algumas variaveis e funções para nossa nova classe.
 
-> ShooterAnimInstance.h
 ```c++
+// ShooterAnimInstance.h
 ...
 public:
 	UFUNCTION(BlueprintCallable)
@@ -30,8 +30,9 @@ private:
   bool bIsAccelerating;
 ```
 
-> ShooterAnimInstance.cpp
 ```c++
+// ShooterAnimInstance.cpp
+
 #include "ShooterCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
