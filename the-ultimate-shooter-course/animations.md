@@ -805,3 +805,134 @@ void AShooterCharacter::FireWeapon()
   }
 }
 ```
+
+Vamos compilar e voltar ao nosso editor para escolhermos os efeitos de particula do impacto do tiro. Vamos no blueprint de nosso personagem, e na seção "Combat", na opção "Impact Particles" escolher "P_BelicaHitWorld", localizado em `ParagonLtBelica/FX/Particles/Belica/Abilities/Primary/FX`.
+
+<pre><div align='center'><p>BP_ShooterCharacter</p><img height="250" src="../images/2022-10-14-00-07-23.png"></div></pre>
+
+Agora é só compilar, salvar e testar!!!
+
+<pre><div align='center'><p>BP_ShooterCharacter</p><img height="250" src="../images/ezgif-5-a7fbfd79ae.gif"></div></pre>
+
+## Adicionando particulas de feixe aos tiros
+
+Depois de implementar alguns efeitos de particula para o impacto dos tiros, vamos agora acrescentar um efeito de particula de feixe pra simular a bala passando.
+
+Vamos começar fazendo o download do arquivo "Smoke_Beam.zip" neste [repositorio](https://github.com/DruidMech/UE4-CPP-Shooter-Series/tree/master/Assets/FX).
+
+Depois vamos criar um diretorio em `Content/_Game/Assets/FX` chamado "SmokeBeam" e importar os assets pra dentro dela (é necessário fazer isso manualmente pelo explorador de arquivos). E assim teremos os arquivos de particula importados.
+
+<pre><div align='center'><p>Unreal Editor</p><img height="250" src="../images/2022-10-14-00-17-51.png"></div></pre>
+
+Ao abrirmos o material "M_Beam", podemos ver que existem alguns erros, que preciaremos corrigir.
+
+<pre><div align='center'><p>M_Beam</p><img height="150" src="../images/2022-10-14-00-19-16.png"></div></pre>
+
+Ao expandirmos o "Material Graph" podemos ver que existe um erro na textura.
+
+<pre><div align='center'><p>M_Beam > Material Graph</p><img height="350" src="../images/2022-10-14-00-21-18.png"></div></pre>
+
+Agora o que vamos fazer é ir no Editor Unreal, e arrastar o arquivo de textura "Beam" para dentro do "Material Graph" do "M_Beam".
+
+<pre><div align='center'><p>M_Beam > Material Graph</p><img height="350" src="../images/2022-10-14-00-22-38.png"></div></pre>
+
+Feito isso, precisamos reconectar os beams da textura com erro para essa que acabamos de arrastar. E então deletando a textura com erro, e em seguida salvar.
+
+<pre><div align='center'><p>M_Beam > Material Graph</p><img height="350" src="../images/2022-10-14-00-23-47.png"></div></pre>
+
+Faremos o mesmo com o material "M_Beam_Faded".
+
+<pre><div align='center'><p>M_Beam_Faded > Material Graph</p><img height="350" src="../images/2022-10-14-00-25-36.png"></div></pre>
+
+Agora no arquivo de particula "P_SmokeTrail", selecionamos o componente "Emitters", e depois selecionamos a propriedade "Required", e em seguida na esquerda, na seção "Emitter", escolhermos na opção "Material" o arquivo "M_Beam", e depois salvamos.
+
+<pre><div align='center'><p>P_SmokeTrail</p><img height="350" src="../images/2022-10-14-00-27-53.png"></div></pre>
+
+Faremos o mesmo com arquivo de particula "P_SmokeTrail_Faded", porém escolhendo como "Material" o arquivo "M_Beam_Faded".
+
+<pre><div align='center'><p>P_SmokeTrail_Faded</p><img height="350" src="../images/2022-10-14-00-31-19.png"></div></pre>
+
+Agora vamos adicionar algumas variaveis em nosso codigo para referenciar essas particulas.
+
+<pre><div align='center'><p>P_SmokeTrail_Faded</p><img height="350" src="../images/2022-10-14-00-46-15.png"></div></pre>
+
+> ShooterCharacter.h
+```diff
+  /** Smoke trail for bullets */
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat, meta = (AllowPrivateAccess = "true"))
+  class UParticleSystem* BeamParticles;
+```
+
+> ShooterCharacter.cpp
+```diff
+  void AShooterCharacter::FireWeapon()
+{
+  if (FireSound)
+  {
+    UGameplayStatics::PlaySound2D(this, FireSound);
+  }
+
+  const USkeletalMeshSocket* BarrelSocket = GetMesh()->GetSocketByName("BarrelSocket");
+
+  if (BarrelSocket)
+  {
+    const FTransform SocketTransform = BarrelSocket->GetSocketTransform((GetMesh()));
+
+    if (MuzzleFlash)
+    {
+      UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MuzzleFlash, SocketTransform);
+    }
+
+    FHitResult FireHit;
+    const FVector Start { SocketTransform.GetLocation() };
+    const FQuat Rotation { SocketTransform.GetRotation() };
+    const FVector RotationAxis { Rotation.GetAxisX() };
+    const FVector End { Start + RotationAxis * 50'000.f };
+
++    FVector BeamEndPoint { End };
+
+    GetWorld()->LineTraceSingleByChannel(FireHit, Start, End, ECollisionChannel::ECC_Visibility);
+
+    if (FireHit.bBlockingHit)
+    {
+      // DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 2.f);
+      DrawDebugPoint(GetWorld(), FireHit.Location, 5.f, FColor::Red, false, 2.f);
+
++      BeamEndPoint = FireHit.Location;
+
++      if (ImpactParticles)
++      {
++        UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactParticles, FireHit.Location);
++      }
+    }
+
+    if (BeamParticles)
+    {
+      UParticleSystemComponent* Beam = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), BeamParticles, SocketTransform);
+
+      if (Beam)
+      {
+        Beam->SetVectorParameter(FName("Target"), BeamEndPoint);
+      }
+    }
+  }
+
+  UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+
+  if (AnimInstance && HipFireMontage)
+  {
+      AnimInstance->Montage_Play(HipFireMontage);
+      AnimInstance->Montage_JumpToSection(FName("StartFire"));
+  }
+}
+```
+
+Tendo em vista que no nosso sistema de particula, possuimos como atributo de nome "Target" da propriedade "Target Name". É nele que associaremos o final do trilho de fumaça através de `Beam->SetVectorParameter(FName("Target"), BeamEndPoint);`.
+
+Então definimos no blueprint de nosso personagem "BP_ShooterCharacter", na seção "Combat", a opção "Beam Particles" como "P_SmokeTrail"
+
+<pre><div align='center'><p>BP_ShooterCharacter</p><img height="250" src="../images/2022-10-14-00-40-32.png"></div></pre>
+
+Então é só compilar, salvar e testar!
+
+<pre><div align='center'><img height="250" src="../images/ezgif-5-eee2b9ef91.gif"></div></pre>
