@@ -8,14 +8,14 @@ Depois de adicionar o modelo ao nosso blueprint, ele se mantem estatico. Isso po
 // ShooterAnimInstance.h
 ...
 public:
-	UFUNCTION(BlueprintCallable)
-	void UpdateAnimationProperties(float DeltaTime);
+  UFUNCTION(BlueprintCallable)
+  void UpdateAnimationProperties(float DeltaTime);
 
-	virtual void NativeInitializeAnimation() override;
+  virtual void NativeInitializeAnimation() override;
 
 private:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
-	class AShooterCharacter* ShooterCharacter;
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
+  class AShooterCharacter* ShooterCharacter;
 
   /** The speed of the character */
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
@@ -38,10 +38,10 @@ private:
 
 void UShooterAnimInstance::UpdateAnimationProperties(float DeltaTime)
 {
-	if (ShooterCharacter)
-	{
-		ShooterCharacter = Cast<AShooterCharacter>(TryGetPawnOwner());
-	}
+  if (ShooterCharacter)
+  {
+    ShooterCharacter = Cast<AShooterCharacter>(TryGetPawnOwner());
+  }
   if (ShooterCharacter)
   {
     // get the lateral speed of the character from velocity
@@ -223,7 +223,9 @@ A lógica ficara da seguinte forma utilizando "Get Speed" e "Equal".
 
 <pre><div align='center'><p>BP_ShooterAnimInstance > AnimGraph > Ground Locomotion > JogStart to JogStop (rule)</p><img height="120" src="../images/2022-10-12-20-45-32.png"></div></pre>
 
-Agora se dermos o play, podemos ver nossas animações funcionando.
+Agora é só compilar, salvar e testar.
+
+<pre><div align='center'><img height="350" src="../images/ezgif-5-92943cb6df.gif"></div></pre>
 
 ## Refinando/Cortando as animações
 
@@ -255,7 +257,13 @@ Depois posicionando no frame 15, com o botão direito escolhemos "Remove frame 0
 
 Agora vamos na animação "Jog_Fwd_Stop_trimmed" clicando nela duas vezes para abrir o editor. Posicionando no frame 28, e com o botão direito escolhendo "Remove from frame 0 to frame 28". Depois posicionando no frame 50, com o botão direito escolhemos "Remove frame 51 to frame 87".
 
+Então é só compilar, salvar e testar.
+
 ## Rotacionando o personagem de acordo com o movimento
+
+Atualmente, a rotação da camera com nosso personagem esta da seguinte forma:
+
+<pre><div align='center'><img height="350" src="../images/ezgif-5-ebddc1793e.gif"></div></pre>
 
 Vamos mudar algumas coisas temporiamente fazendo com que a rotação do personagem não acompanhe a rotação da camera.
 
@@ -283,6 +291,10 @@ Para garantir que essas mudanças funcionem, é necessário que no blueprint de 
 E no componente `CharacterMovement` na seção "Character Movement (Rotation Settings)", a opção Orient Rotation to Movement esteja marcada.
 
 <pre><div align='center'><p>BP_ShooterCharacter</p><img height="100" src="../images/2022-10-12-23-11-38.png"></div></pre>
+
+Então podemos compilar, salvar e testar.
+
+<pre><div align='center'><img height="350" src="../images/ezgif-5-0bd493bbb0.gif"></div></pre>
 
 ## Controlando o pulo
 

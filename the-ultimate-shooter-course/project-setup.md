@@ -461,3 +461,7 @@ Note que ele está metade fora da capsula e rotacionado para o lado diferente do
 Fazendo assim com que tudo fique adequado.
 
 <div align='center'><img height="350" src="../images/2022-10-12-13-59-35.png"></div>
+
+Agora é só compilar, salvar e testar.
+
+<pre><div align='center'><img height="350" src="../images/ezgif-5-76268334b8.gif"></div></pre>
